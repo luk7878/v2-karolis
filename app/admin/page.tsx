@@ -331,12 +331,12 @@ export default function AdminPage() {
     <main className="studio">
       <header className="studio-top">
         <div>
-          <span className="brand-mark">S?</span>
-          <b>Turinio studija</b>
+          <span className="brand-mark" aria-hidden="true">C</span>
+          <span className="admin-brand-copy"><b>CONSUST</b><small>Turinio studija</small></span>
         </div>
         <div className="studio-top-actions">
-          <a href="/admin/svetaine">Svetainė ◫</a>
-          <a href="/admin/uzklausos">Užklausos ✉</a>
+          <a href="/admin/svetaine"><span aria-hidden="true">⌘</span> Svetainė</a>
+          <a href="/admin/uzklausos"><span aria-hidden="true">↗</span> Užklausos</a>
           {message && <span className="save-message">✓ {message}</span>}
           {!message && lastSaved && (
             <span className="save-message">
@@ -359,7 +359,7 @@ export default function AdminPage() {
             {saving ? "Saugoma…" : "Publikuoti"}
           </button>
           <button className="studio-user" onClick={logout} title={user || ""}>
-            ↪
+            Atsijungti
           </button>
         </div>
       </header>
@@ -692,7 +692,7 @@ export default function AdminPage() {
           {form.image_url ? (
             <img src={String(form.image_url)} alt="" />
           ) : (
-            <div className="preview-placeholder">S?</div>
+            <div className="preview-placeholder"><span>C</span><small>CONSUST</small></div>
           )}
           <div>
             <small>

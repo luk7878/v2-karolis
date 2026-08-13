@@ -100,8 +100,8 @@ export default function SiteAdmin() {
     <main className="site-admin">
       <header className="studio-top">
         <div>
-          <span className="brand-mark">C</span>
-          <b>Svetainės valdymas</b>
+          <span className="brand-mark" aria-hidden="true">C</span>
+          <span className="admin-brand-copy"><b>CONSUST</b><small>Svetainės valdymas</small></span>
         </div>
         <div className="studio-top-actions">
           <a href="/admin">← Turinio studija</a>

@@ -117,8 +117,8 @@ export default function InquiriesPage() {
     <main className="inbox">
       <header className="studio-top">
         <div>
-          <span className="brand-mark">C</span>
-          <b>Gautos užklausos</b>
+          <span className="brand-mark" aria-hidden="true">C</span>
+          <span className="admin-brand-copy"><b>CONSUST</b><small>Gautos užklausos</small></span>
         </div>
         <div className="studio-top-actions">
           <a href="/admin">← Turinio studija</a>
