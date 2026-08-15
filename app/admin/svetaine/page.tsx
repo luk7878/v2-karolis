@@ -2,19 +2,8 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../../lib/supabase";
 import MediaUpload from "../../../components/admin/MediaUpload";
-type Tab = "home" | "team" | "partners" | "stats";
+type Tab = "home" | "partners" | "stats";
 type Item = Record<string, string | number | boolean> & { id: string };
-const blankTeam = {
-  name: "",
-  role_lt: "",
-  role_en: "",
-  bio_lt: "",
-  bio_en: "",
-  image_url: "",
-  email: "",
-  sort_order: 0,
-  is_visible: true,
-};
 const blankPartner = {
   name: "",
   logo_url: "",
@@ -27,11 +16,10 @@ export default function SiteAdmin() {
     [ready, setReady] = useState(false),
     [message, setMessage] = useState(""),
     [settings, setSettings] = useState<Record<string, string | number>>({}),
-    [team, setTeam] = useState<Item[]>([]),
     [partners, setPartners] = useState<Item[]>([]),
     [views, setViews] = useState<{ path: string; count: number }[]>([]),
     [draft, setDraft] =
-      useState<Record<string, string | number | boolean>>(blankTeam),
+      useState<Record<string, string | number | boolean>>(blankPartner),
     [editing, setEditing] = useState<string | null>(null);
   useEffect(() => {
     void load();
@@ -45,14 +33,12 @@ export default function SiteAdmin() {
       .eq("id", a.user.id)
       .single();
     if (!p?.is_admin) return location.replace("/admin");
-    const [s, t, pa, v] = await Promise.all([
+    const [s, pa, v] = await Promise.all([
       supabase.from("site_settings").select("*").single(),
-      supabase.from("team_members").select("*").order("sort_order"),
       supabase.from("partners").select("*").order("sort_order"),
       supabase.from("page_views").select("path"),
     ]);
     setSettings(s.data || {});
-    setTeam((t.data || []) as Item[]);
     setPartners((pa.data || []) as Item[]);
     const counts: Record<string, number> = {};
     (v.data || []).forEach((x) => (counts[x.path] = (counts[x.path] || 0) + 1));
@@ -72,13 +58,13 @@ export default function SiteAdmin() {
       .eq("id", "main");
     setMessage(error ? error.message : "Svetainės nustatymai išsaugoti");
   }
-  function begin(type: "team" | "partners", item?: Item) {
-    setTab(type);
+  function begin(item?: Item) {
+    setTab("partners");
     setEditing(item?.id || null);
-    setDraft(item || (type === "team" ? blankTeam : blankPartner));
+    setDraft(item || blankPartner);
   }
   async function saveItem() {
-    const table = tab === "team" ? "team_members" : "partners";
+    const table = "partners";
     const { id, ...payload } = draft as Item;
     const q = editing
       ? supabase.from(table).update(payload).eq("id", editing)
@@ -87,7 +73,7 @@ export default function SiteAdmin() {
     if (error) return setMessage(error.message);
     setMessage("Išsaugota");
     setEditing(null);
-    setDraft(tab === "team" ? blankTeam : blankPartner);
+    setDraft(blankPartner);
     await load();
   }
   async function remove(table: string, id: string) {
@@ -109,7 +95,7 @@ export default function SiteAdmin() {
         </div>
       </header>
       <nav className="site-admin-tabs">
-        {(["home", "team", "partners", "stats"] as Tab[]).map((x) => (
+        {(["home", "partners", "stats"] as Tab[]).map((x) => (
           <button
             className={tab === x ? "active" : ""}
             onClick={() => {
@@ -120,9 +106,7 @@ export default function SiteAdmin() {
           >
             {x === "home"
               ? "Pagrindinis"
-              : x === "team"
-                ? "Komanda"
-                : x === "partners"
+              : x === "partners"
                   ? "Partneriai"
                   : "Statistika"}
           </button>
@@ -214,14 +198,14 @@ export default function SiteAdmin() {
             </button>
           </div>
         )}
-        {(tab === "team" || tab === "partners") && (
+        {tab === "partners" && (
           <div className="manage-grid">
             <div>
               <div className="manage-head">
-                <h2>{tab === "team" ? "Komandos nariai" : "Partneriai"}</h2>
-                <button onClick={() => begin(tab)}>＋ Pridėti</button>
+                <h2>Partneriai</h2>
+                <button onClick={() => begin()}>＋ Pridėti</button>
               </div>
-              {(tab === "team" ? team : partners).map((item) => (
+              {partners.map((item) => (
                 <article className="manage-row" key={item.id}>
                   <div>
                     {String(item.image_url || item.logo_url) ? (
@@ -235,13 +219,10 @@ export default function SiteAdmin() {
                   </div>
                   <strong>{String(item.name)}</strong>
                   <small>{item.is_visible ? "Rodoma" : "Paslėpta"}</small>
-                  <button onClick={() => begin(tab, item)}>Redaguoti</button>
+                  <button onClick={() => begin(item)}>Redaguoti</button>
                   <button
                     onClick={() =>
-                      void remove(
-                        tab === "team" ? "team_members" : "partners",
-                        item.id,
-                      )
+                      void remove("partners", item.id)
                     }
                   >
                     ×
@@ -258,63 +239,7 @@ export default function SiteAdmin() {
                   onChange={(e) => setDraft({ ...draft, name: e.target.value })}
                 />
               </label>
-              {tab === "team" ? (
-                <>
-                  <div className="editor-two">
-                    <label>
-                      Pareigos LT
-                      <input
-                        value={String(draft.role_lt || "")}
-                        onChange={(e) =>
-                          setDraft({ ...draft, role_lt: e.target.value })
-                        }
-                      />
-                    </label>
-                    <label>
-                      Pareigos EN
-                      <input
-                        value={String(draft.role_en || "")}
-                        onChange={(e) =>
-                          setDraft({ ...draft, role_en: e.target.value })
-                        }
-                      />
-                    </label>
-                  </div>
-                  <label>
-                    Biografija LT
-                    <textarea
-                      value={String(draft.bio_lt || "")}
-                      onChange={(e) =>
-                        setDraft({ ...draft, bio_lt: e.target.value })
-                      }
-                    />
-                  </label>
-                  <label>
-                    Biografija EN
-                    <textarea
-                      value={String(draft.bio_en || "")}
-                      onChange={(e) =>
-                        setDraft({ ...draft, bio_en: e.target.value })
-                      }
-                    />
-                  </label>
-                  <label>
-                    Nuotrauka
-                    <input
-                      value={String(draft.image_url || "")}
-                      onChange={(e) =>
-                        setDraft({ ...draft, image_url: e.target.value })
-                      }
-                    />
-                  </label>
-                  <MediaUpload
-                    label="Įkelti nuotrauką"
-                    value={String(draft.image_url || "")}
-                    onChange={(v) => setDraft({ ...draft, image_url: v })}
-                  />
-                </>
-              ) : (
-                <>
+              <>
                   <label>
                     Interneto svetainė
                     <input
@@ -338,8 +263,7 @@ export default function SiteAdmin() {
                     value={String(draft.logo_url || "")}
                     onChange={(v) => setDraft({ ...draft, logo_url: v })}
                   />
-                </>
-              )}
+              </>
               <div className="editor-two">
                 <label>
                   Eiliškumas

@@ -1,13 +1,9 @@
+import PublicHeader from "../../components/PublicHeader";
+import PublicFooter from "../../components/PublicFooter";
 export default function CookiesPage() {
   return (
     <main className="legal-page">
-      <header className="content-nav">
-        <a className="brand" href="/">
-          <span className="brand-mark">S?</span>
-          <span className="brand-name">SKEPTIC YOUTH</span>
-        </a>
-        <a href="/">← Pradžia</a>
-      </header>
+      <PublicHeader />
       <article>
         <div className="section-label">[ SKAIDRUMAS ]</div>
         <h1>Slapukų informacija</h1>
@@ -35,12 +31,13 @@ export default function CookiesPage() {
         <h2>Klausimai</h2>
         <p>
           Dėl privatumo ar slapukų rašykite{" "}
-          <a href="mailto:ngoskepticyouth@gmail.com">
-            ngoskepticyouth@gmail.com
+          <a href="mailto:vsi.asta.info@gmail.com">
+            vsi.asta.info@gmail.com
           </a>
           .
         </p>
       </article>
+      <PublicFooter />
     </main>
   );
 }

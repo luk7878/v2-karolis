@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import PublicHeader from "../components/PublicHeader";
+import PublicFooter from "../components/PublicFooter";
 
 type Lang = "lt" | "en";
 
@@ -19,8 +21,6 @@ const copy = {
     work: [["Karjera", "Padedame jauniems žmonėms atpažinti savo stiprybes ir drąsiai žengti į darbo rinką.", "↗  JAUNIMO ĮGALINIMAS"], ["Skaitmena", "Technologijas paverčiame kūrybos, bendradarbiavimo ir naujų galimybių įrankiu.", "↗  PRAKTINIAI ĮGŪDŽIAI"], ["Tvarumas", "Jungiame strategiją su kasdieniais sprendimais organizacijose ir bendruomenėse.", "↗  ATSAKINGAS AUGIMAS"], ["Judėjimas", "Kuriame sporto ir lauko veiklas įvairių fizinių gebėjimų žmonėms.", "↗  ĮTRAUKUS DALYVAVIMAS"]],
     projectsTag: "MŪSŲ MARŠRUTAS", projectsTitle: "Iš Kauno — į bendrą Europos patirtį.",
     projects: [["2021", "Digitalize", "Jaunimo darbuotojų skaitmeninės kompetencijos", "KA153"], ["2021", "Control Guide Against Environmental Pollution", "Aplinkosauga ir europinės vertybės", "KA152"], ["2025", "Making the Right Career Choices", "Sąmoningi jaunimo karjeros pasirinkimai", "KA152"], ["2025", "Create, Edit, Employ", "Vaizdo įgūdžiai geresnei ateičiai", "KA153"]],
-    peopleTag: "EKSPERTŲ TINKLAS", peopleTitle: "Patirtis iš švietimo, verslo, tvarumo ir sporto.",
-    people: [["MS", "Mindaugas Samuolaitis", "Direktorius · karjeros valdymas", "20+ projektų"], ["AA", "Audronė Alijošiūtė-Paulauskienė", "Tvarumo ekspertė", "20+ metų patirties"], ["DG", "Deimantas Gaidamavičius", "IT ir projektų vadovas", "Erasmus+ koordinatorius"], ["BS", "Birutė Statkevičienė", "Įtraukaus sporto ekspertė", "Olimpinė patirtis"], ["MS", "Marija Stravinskaitė", "Projektų koordinatorė", "15+ Erasmus+ veiklų"]],
     contactTag: "KITA STOTELĖ", contact: "Kurkime tai, ko dar nėra.", contactText: "Ieškote patikimo partnerio Erasmus+ projektui, mokymams ar jaunimo iniciatyvai? Pradėkime nuo pokalbio.", write: "Pradėti pokalbį", city: "Kaunas · Lietuva · Europa",
   },
   en: {
@@ -34,27 +34,21 @@ const copy = {
     work: [["Careers", "We help young people recognise their strengths and enter the labour market with confidence.", "↗  YOUTH EMPOWERMENT"], ["Digital", "We turn technology into a tool for creativity, collaboration and new opportunity.", "↗  PRACTICAL SKILLS"], ["Sustainability", "We connect strategy with everyday decisions in organisations and communities.", "↗  RESPONSIBLE GROWTH"], ["Movement", "We create sport and outdoor activities for people of different physical abilities.", "↗  INCLUSIVE PARTICIPATION"]],
     projectsTag: "OUR ROUTE", projectsTitle: "From Kaunas to shared European experience.",
     projects: [["2021", "Digitalize", "Digital competences for youth workers", "KA153"], ["2021", "Control Guide Against Environmental Pollution", "Environment and European values", "KA152"], ["2025", "Making the Right Career Choices", "Informed career choices for young people", "KA152"], ["2025", "Create, Edit, Employ", "Video skills for a better future", "KA153"]],
-    peopleTag: "EXPERT NETWORK", peopleTitle: "Experience across education, business, sustainability and sport.",
-    people: [["MS", "Mindaugas Samuolaitis", "Director · career management", "20+ projects"], ["AA", "Audronė Alijošiūtė-Paulauskienė", "Sustainability expert", "20+ years experience"], ["DG", "Deimantas Gaidamavičius", "IT & project manager", "Erasmus+ coordinator"], ["BS", "Birutė Statkevičienė", "Inclusive sport expert", "Olympic experience"], ["MS", "Marija Stravinskaitė", "Project coordinator", "15+ Erasmus+ activities"]],
     contactTag: "NEXT STOP", contact: "Let's create what does not exist yet.", contactText: "Looking for a reliable partner for an Erasmus+ project, training or youth initiative? Let's begin with a conversation.", write: "Start a conversation", city: "Kaunas · Lithuania · Europe",
   }
 };
 
 export default function Home() {
   const [lang, setLang] = useState<Lang>("lt");
-  const [menuOpen, setMenuOpen] = useState(false);
-  useEffect(() => { document.documentElement.lang = lang; }, [lang]);
+  useEffect(() => {
+    if (localStorage.getItem("consust-language") === "en") setLang("en");
+    const update = (event: Event) => setLang((event as CustomEvent<Lang>).detail);
+    window.addEventListener("consust-language", update);
+    return () => window.removeEventListener("consust-language", update);
+  }, []);
   const t = copy[lang];
-  const links = ["/", "/apie-mus", "/projektai", "/straipsniai", "/kontaktai"];
-  return <main className="atlas" id="top">
-    <aside className={`rail ${menuOpen ? "open" : ""}`}>
-      <a className="atlas-logo" href="#top" onClick={() => setMenuOpen(false)}><i>C</i><span>CONSUST</span></a>
-      <nav>{t.menu.map((x,i)=><a key={x} href={links[i]} onClick={() => setMenuOpen(false)}><b>0{i+1}</b>{x}</a>)}</nav>
-      <button onClick={() => setLang(lang === "lt" ? "en" : "lt")}>{t.switch}<span>↗</span></button>
-      <small>OID<br/>E10242627</small>
-    </aside>
-    <button className="mobile-menu" onClick={() => setMenuOpen(!menuOpen)} aria-label="Atverti meniu">{menuOpen ? "×" : "☰"}</button>
-
+  return <main className="home-page" id="top">
+    <PublicHeader />
     <div className="atlas-content">
       <section className="atlas-hero">
         <div className="topline"><span>{t.label}</span><span>54.8985°N / 23.9036°E</span></div>
@@ -83,17 +77,11 @@ export default function Home() {
         <div className="timeline">{t.projects.map((p,i)=><article key={p[1]}><div className="year">{p[0]}<i/></div><div className="project-no">0{i+1}</div><h3>{p[1]}</h3><p>{p[2]}</p><span>{p[3]}</span></article>)}</div>
       </section>
 
-      <section className="network" id="zmones">
-        <div className="section-code light"><span>05 / 06</span><b>{t.peopleTag}</b></div>
-        <h2>{t.peopleTitle}</h2>
-        <div className="network-grid">{t.people.map((p,i)=><article key={p[1]}><div className={`portrait tone${i}`}><span>{p[0]}</span><i>{String(i+1).padStart(2,"0")}</i></div><h3>{p[1]}</h3><p>{p[2]}</p><small>{p[3]}</small></article>)}</div>
-      </section>
-
       <section className="station" id="kontaktai">
-        <div className="section-code"><span>06 / 06</span><b>{t.contactTag}</b></div>
+        <div className="section-code"><span>05 / 05</span><b>{t.contactTag}</b></div>
         <div className="station-grid"><div><h2>{t.contact}</h2><p>{t.contactText}</p><a href="mailto:vsi.asta.info@gmail.com">{t.write}<span>↗</span></a></div><div className="radar" aria-hidden="true"><i/><i/><i/><b>KAUNAS</b></div></div>
-        <footer><div><strong>CONSUST</strong><span>{t.city}</span></div><div><a href="mailto:vsi.asta.info@gmail.com">vsi.asta.info@gmail.com</a><a href="tel:+37069962328">+370 699 62328</a></div><small>© {new Date().getFullYear()} · Alternative Solutions for a Sustainable Future</small></footer>
       </section>
+      <PublicFooter />
     </div>
   </main>;
 }

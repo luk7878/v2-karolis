@@ -1,13 +1,9 @@
+import PublicHeader from "../../components/PublicHeader";
+import PublicFooter from "../../components/PublicFooter";
 export default function PrivacyPage() {
   return (
     <main className="legal-page">
-      <header className="content-nav">
-        <a className="brand" href="/">
-          <span className="brand-mark">S?</span>
-          <span className="brand-name">SKEPTIC YOUTH</span>
-        </a>
-        <a href="/">← Pradžia</a>
-      </header>
+      <PublicHeader />
       <article>
         <div className="section-label">[ ATNAUJINTA 2026-08-12 ]</div>
         <h1>Privatumo politika</h1>
@@ -17,10 +13,9 @@ export default function PrivacyPage() {
         </p>
         <h2>Duomenų valdytojas</h2>
         <p>
-          Asociacija „Lietuvos skeptiškas jaunimas“, juridinio asmens kodas
-          304750493, Papilio g. 9, Kaunas. El. paštas:{" "}
-          <a href="mailto:ngoskepticyouth@gmail.com">
-            ngoskepticyouth@gmail.com
+          VšĮ „Alternatyvūs sprendimai tvariai ateičiai“, Kaunas. El. paštas:{" "}
+          <a href="mailto:vsi.asta.info@gmail.com">
+            vsi.asta.info@gmail.com
           </a>
           .
         </p>
@@ -61,6 +56,7 @@ export default function PrivacyPage() {
           Atnaujinę šią politiką, šiame puslapyje pakeisime atnaujinimo datą.
         </p>
       </article>
+      <PublicFooter />
     </main>
   );
 }
