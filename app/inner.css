@@ -66,3 +66,17 @@
   .about-numbers{grid-template-columns:1fr}
   .about-numbers article{border-right:0;border-bottom:1px solid #5ea9bd}
 }
+
+/* Project imagery */
+.catalog-card.has-image{grid-template-columns:minmax(180px,.45fr) .22fr 1fr .08fr;gap:2.5vw}
+.catalog-card-image{width:100%;aspect-ratio:1200/630;object-fit:cover;border:1px solid #a9b0a7;background:#e9edf3}
+.detail-cover{margin:0;background:var(--night);padding:0 9vw 90px}
+.detail-cover img{display:block;width:100%;max-width:1200px;margin:0 auto;aspect-ratio:1200/630;object-fit:cover;border:1px solid #294047}
+.detail-body a{color:#11637b;font-weight:750;text-decoration:underline;text-decoration-color:var(--orange);text-decoration-thickness:2px;text-underline-offset:4px}
+.detail-body blockquote{margin:45px 0 0;padding:22px 25px;border-left:4px solid var(--orange);background:#e6e2d4;color:#455954;font-size:.85rem}
+.detail-body ul{padding-left:1.2rem}.detail-body li{margin:12px 0;padding-left:7px}
+@media(max-width:760px){
+  .catalog-card.has-image{grid-template-columns:1fr}
+  .catalog-card-image{margin-bottom:6px}
+  .detail-cover{padding:0 6vw 55px}
+}
